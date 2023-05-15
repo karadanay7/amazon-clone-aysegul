@@ -10,9 +10,16 @@
 
           <div class="a-spacing-large"></div>
           <!-- Button -->
-          <a href="#" class="a-button-buy-again">Add a new product</a>
-          <a href="#" class="a-button-history mr-10">Add a category</a>
-          <a href="#" class="a-button-history mr-10">Add a new owner</a>
+          <NuxtLink to="/products" class="a-button-buy-again"
+            >Add a new product</NuxtLink
+          >
+          <NuxtLink to="/category" class="a-button-history mr-10"
+            >Add a category</NuxtLink
+          >
+          <NuxtLink to="/owner" class="a-button-history mr-10"
+            >Add a owner</NuxtLink
+          >
+
           <!-- Listing page -->
         </div>
       </div>
@@ -57,8 +64,18 @@
             </div>
             <!-- Product Buttons -->
             <div class="a-row">
-              <a href="#" class="a-button-history margin-right-10">Update</a>
-              <a href="#" class="a-button-history margin-right-10">Delete</a>
+              <NuxtLink
+                :to="`/products/${product._id}`"
+                class="a-button-history margin-right-10"
+                >Update</NuxtLink
+              >
+
+              <a
+                href="#"
+                class="a-button-history margin-right-10"
+                @click="onDeleteProduct(product._id)"
+                >Delete</a
+              >
             </div>
           </div>
         </div>
@@ -71,6 +88,15 @@
 const response = await useFetch("http://localhost:3000/api/products");
 
 const products = response.data.value.products;
+const onDeleteProduct = async (id) => {
+  try {
+    await $fetch(`http://localhost:3000/api/products/${id}`, {
+      method: "DELETE",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

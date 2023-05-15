@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@types/node": "^18",
+    "nuxt": "^3.4.3"
+  },
+  "dependencies": {
+    "@nuxt/image-edge": "^1.0.0-28059208.2abef1b",
+    "@nuxtjs/robots": "^3.0.0",
+    "bootstrap": "^5.2.3",
+    "nuxt-icon": "^0.4.0",
+    "nuxt-simple-sitemap": "^2.4.23"
+  }
+}

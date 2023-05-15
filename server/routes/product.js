@@ -6,11 +6,14 @@ const Product = require("../models/product");
 router.post("/products", upload.single("photo"), async (req, res) => {
   try {
     let product = new Product();
+    product.category = req.body.category;
+    product.owner = req.body.owner;
     product.title = req.body.title;
+    product.price = req.body.price;
+    product.stockQuantity = req.body.stockQuantity;
     product.description = req.body.description;
     product.photo = req.file.location;
-    product.stockQuantity = req.body.stockQuantity;
-    product.price = req.body.price;
+
     await product.save();
     res.json({
       status: true,
@@ -27,7 +30,7 @@ router.post("/products", upload.single("photo"), async (req, res) => {
 //  GET request  - get all products
 router.get("/products", async (req, res) => {
   try {
-    let products = await Product.find();
+    let products = await Product.find().populate("owner category").exec();
     res.json({
       success: true,
       products: products,
@@ -43,7 +46,9 @@ router.get("/products", async (req, res) => {
 // GET request  - get a single product
 router.get("/products/:id", async (req, res) => {
   try {
-    let product = await Product.findOne({ _id: req.params.id });
+    let product = await Product.findOne({ _id: req.params.id })
+      .populate("owner category")
+      .exec();
     res.json({
       success: true,
       product: product,
@@ -81,12 +86,13 @@ router.put("/products/:id", upload.single("photo"), async (req, res) => {
       { _id: req.params.id },
       {
         $set: {
+          category: req.body.categoryID,
+          owner: req.body.ownerID,
           title: req.body.title,
           price: req.body.price,
-          category: req.body.categoryID,
-          photo: req.file.location,
+          stockQuantity: req.body.stockQuantity,
           description: req.body.description,
-          owner: req.body.ownerID,
+          photo: req.file.location,
         },
       },
       { upsert: true }

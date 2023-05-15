@@ -2,7 +2,6 @@
 export default defineNuxtConfig({
   modules: [
     "nuxt-icon",
-    "@nuxt/content",
     "@nuxtjs/robots",
     "@nuxt/image-edge",
     "nuxt-simple-sitemap",
@@ -20,7 +19,7 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       title: "Amazon clone",
-      meta: [{ name: "description", content: "Aysegul Karadan" }],
+      meta: [{ name: "Amazon clone" }],
       link: [
         {
           rel: "stylesheet",

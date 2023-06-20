@@ -99,7 +99,24 @@
                 </a>
                 (Author)
               </div>
-              <div class="reviewGroup"></div>
+              <div class="reviewGroup">
+                <ClientOnly>
+                  <VueStarRating
+                    :rating="product.avarageRating"
+                    :show-rating="false"
+                    :glow="1"
+                    :border-width="1"
+                    :rounded-corners="true"
+                    :read-only="true"
+                    :star-size="18"
+                    :star-points="[
+                      23, 2, 14, 17, 0, 19, 10, 34, 7, 50, 23, 43, 38, 50, 36,
+                      34, 46, 19, 31, 17,
+                    ]"
+                  >
+                  </VueStarRating>
+                </ClientOnly>
+              </div>
               <hr style="margin-top: 10px" />
               <!-- A tags Dummy Data -->
               <div class="mediaMatrix">
@@ -377,12 +394,15 @@
             </div>
           </div>
         </div>
+        <ReviewSection :product="product" :reviews="reviews" />
       </div>
     </div>
   </main>
 </template>
 
 <script setup>
+import VueStarRating from "vue-star-rating";
+import ReviewSection from "~/components/ReviewSection";
 const route = useRoute();
 
 const productResponse = await useFetch(
@@ -390,6 +410,11 @@ const productResponse = await useFetch(
 );
 
 const product = productResponse.data.value.product;
+const reviewResponse = await useFetch(
+  `http://localhost:3000/api/reviews/${route.params.id}`
+);
+
+const reviews = reviewResponse.data.value.reviews;
 </script>
 
 <style lang="scss" scoped></style>

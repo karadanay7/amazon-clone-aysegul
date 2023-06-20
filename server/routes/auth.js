@@ -37,11 +37,37 @@ router.post("/auth/signup", async (req, res) => {
 
 router.get("/auth/user", verifyToken, async (req, res) => {
   try {
-    let foundUser = await User.findOne({ _id: req.decoded._id });
+    let foundUser = await User.findOne({ _id: req.decoded._id }).populate(
+      "addresses"
+    );
+    console.log(foundUser);
     if (foundUser) {
+      console.log(foundUser.address);
       res.json({
         success: true,
         user: foundUser,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+// Update a profile
+router.put("/auth/user", verifyToken, async (req, res) => {
+  try {
+    let foundUser = await User.findOne({ _id: req.decoded._id });
+    if (foundUser) {
+      if (req.body.name) foundUser.name = req.body.name;
+      if (req.body.email) foundUser.email = req.body.email;
+      if (req.body.password) foundUser.password = req.body.password;
+      await foundUser.save();
+      res.json({
+        success: true,
+        message: "Successfully updated",
       });
     }
   } catch (err) {
@@ -56,6 +82,7 @@ router.get("/auth/user", verifyToken, async (req, res) => {
 router.post("/auth/login", async (req, res) => {
   try {
     let foundUser = await User.findOne({ email: req.body.email });
+
     if (!foundUser) {
       res.status(403).json({
         success: false,
@@ -66,7 +93,11 @@ router.post("/auth/login", async (req, res) => {
         let token = jwt.sign(foundUser.toJSON(), process.env.SECRET, {
           expiresIn: 604800, // 1 week
         });
-        res.json({ success: true, token: token });
+        res.json({
+          success: true,
+          token: token,
+          user: foundUser, // Include the user object in the response
+        });
       } else {
         res.status(403).json({
           success: false,

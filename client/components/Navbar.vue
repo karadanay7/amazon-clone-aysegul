@@ -6,9 +6,9 @@
           <!--LOGO  -->
           <div class="col-sm-2">
             <div class="logo-area">
-              <a href="#">
+              <NuxtLink to="/">
                 <img src="~/assets/img/logo.png" alt="logo" class="img-fluid" />
-              </a>
+              </NuxtLink>
             </div>
           </div>
           <!-- Search Bar -->
@@ -25,10 +25,10 @@
                 <div class="nav-sprite" id="nav-packard-glow-loc-icon"></div>
                 <div id="glow-ingress-block">
                   <span class="nav-line-1" id="glow-ingress-line1"
-                    >Deliver
+                    >Deliver to
                   </span>
                   <span class="nav-line-2" id="glow-ingress-line2"
-                    >California
+                    >{{ cityName }}
                   </span>
                 </div>
               </NuxtLink>
@@ -86,21 +86,37 @@
                 </span>
               </a>
               <span class="icp-nav-link-border"></span>
-              <NuxtLink
-                to="/register"
-                class="nav-a nav-a-2"
-                id="nav-link-accountList"
-                tabindex="0"
-              >
-                <span class="nav-line-1">Hello, Sign in</span>
-                <span class="nav-line-2">
-                  Account &amp; Lists
-                  <span
-                    class="nav-icon nav-arrow"
-                    style="visibility: visible"
-                  ></span>
-                </span>
-              </NuxtLink>
+
+              <template v-if="isLoggedIn">
+                <NuxtLink
+                  to="/profile"
+                  class="nav-a nav-a-2"
+                  id="nav-link-accountList"
+                  tabindex="0"
+                >
+                  <span class="nav-line-1">Hello</span>
+                  <span class="nav-line-2">
+                    <span>{{ user.name }}</span>
+                  </span>
+                </NuxtLink>
+              </template>
+              <template v-else>
+                <NuxtLink
+                  to="/signup"
+                  class="nav-a nav-a-2"
+                  id="nav-link-accountList"
+                  tabindex="0"
+                >
+                  <span class="nav-line-1">Hello, Sign in</span>
+                  <span class="nav-line-2">
+                    Account &amp; Lists
+                    <span
+                      class="nav-icon nav-arrow"
+                      style="visibility: visible"
+                    ></span>
+                  </span> </NuxtLink
+              ></template>
+
               <NuxtLink to="/orders" class="nav-a nav-a-2 nav-single-row-link">
                 <span class="nav-line-1"></span>
                 <span class="nav-line-2">Orders</span>
@@ -126,6 +142,29 @@
 
 <script setup>
 import Search from "~/components/Search.vue";
+import { useAuthStore } from "../stores/auth"; // Update the path to your auth store file
+
+const { isLoggedIn, user } = useAuthStore();
+
+const { token } = toRefs(useAuthStore());
+const addresses = ref([]);
+try {
+  const response = await fetch("http://localhost:3000/api/addresses", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.value}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+  addresses.value = data.addresses;
+  // Perform any further actions with the addresses data
+} catch (error) {
+  console.log(error);
+  // Handle any network or other errors
+}
+const cityName = computed(() => addresses.value?.[0].city);
 </script>
 
 <style lang="scss" scoped></style>

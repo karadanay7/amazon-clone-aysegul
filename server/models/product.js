@@ -9,7 +9,6 @@ const ProductSchema = new Schema({
   stockQuantity: Number,
   description: String,
   photo: String,
-
-  rating: [Number],
+  rating: [{ type: Schema.Types.ObjectId, ref: "Review" }],
 });
 module.exports = mongoose.model("Product", ProductSchema);

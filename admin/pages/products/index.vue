@@ -104,6 +104,7 @@
 </template>
 
 <script setup>
+const { status } = useAuth();
 const categoriesResponse = await useFetch(
   "http://localhost:3000/api/categories"
 );
@@ -127,8 +128,6 @@ const onFileSelected = (event) => {
   let nameOfFile = event.target.files[0].name;
   fileName.value = nameOfFile;
   selectedFile.value = ASelectedFile;
-  console.log(selectedFile);
-  console.log(fileName);
 
   return { selectedFile, fileName };
 };
@@ -151,6 +150,8 @@ const onAddProduct = async () => {
 
   // console.log(formData.getAll("ownerID"));
 };
+
+console.log(status.value);
 </script>
 
 <style lang="scss" scoped></style>

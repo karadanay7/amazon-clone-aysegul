@@ -37,7 +37,10 @@
                     <div class="col-sm-9">
                       <div class="a-row a-spacing-small">
                         <!-- Title and Date -->
-                        <a href="#" class="a-link-normal">
+                        <NuxtLink
+                          to="`/products/${product._id}`"
+                          class="a-link-normal"
+                        >
                           <h2 class="a-size-medium">
                             {{ product.title }}
                             <span class="a-letter-space"></span>
@@ -46,7 +49,7 @@
                               >Sep 3, 2019</span
                             >
                           </h2>
-                        </a>
+                        </NuxtLink>
                       </div>
                       <!-- Author's Name -->
                       <div class="a-row a-spacing-small">
@@ -134,7 +137,7 @@
 import FeaturedProduct from "~/components/FeaturedProduct.vue";
 const response = await useFetch("http://localhost:3000/api/products");
 
-const products = response.data.value.products;
+const products = response.data?.value?.products;
 </script>
 
 <style scoped></style>

@@ -13,10 +13,24 @@
     "nuxt": "^3.4.3"
   },
   "dependencies": {
+    "@iconify/vue": "^4.1.1",
     "@nuxt/image-edge": "^1.0.0-28059208.2abef1b",
     "@nuxtjs/robots": "^3.0.0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
+    "@pinia/nuxt": "^0.4.11",
+    "@popperjs/core": "^2.11.7",
+    "@vueuse/core": "^10.1.2",
+    "add": "^2.0.6",
     "bootstrap": "^5.2.3",
     "nuxt-icon": "^0.4.0",
-    "nuxt-simple-sitemap": "^2.4.23"
+    "nuxt-simple-sitemap": "^2.4.23",
+    "pinia": "^2.1.3",
+    "pinia-plugin-persistedstate": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vue": "^3.3.4",
+    "vue-no-ssr": "^1.1.1",
+    "vue-star-rating": "^2.1.0",
+    "yarn": "^1.22.19"
   }
 }

@@ -214,7 +214,6 @@
                 <div class="row">
                   <div class="col-sm-4 mb-1">
                     <div class="a-declarative">
-                      Length:
                       <span>
                         <a href="#">
                           386 pages

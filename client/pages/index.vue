@@ -38,7 +38,7 @@
                       <div class="a-row a-spacing-small">
                         <!-- Title and Date -->
                         <NuxtLink
-                          to="`/products/${product._id}`"
+                          :to="`/products/${product._id}`"
                           class="a-link-normal"
                         >
                           <h2 class="a-size-medium">

@@ -122,7 +122,7 @@
 <script setup>
 import { ref } from "vue";
 import VueStarRating from "vue-star-rating";
-import { useAuthStore } from "../../stores/auth"; // Update the path to your auth store file
+import { useAuthStore } from "../../store/auth"; // Update the path to your auth store file
 const route = useRoute();
 const router = useRouter();
 

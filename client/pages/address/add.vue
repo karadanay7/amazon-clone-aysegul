@@ -216,7 +216,7 @@
   <!--/MAIN-->
 </template>
 <script setup>
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from "~/store/auth";
 const response = await useFetch(`http://localhost:3000/api/countries`);
 
 const { token } = toRefs(useAuthStore());

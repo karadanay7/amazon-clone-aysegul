@@ -220,7 +220,7 @@
   <!--/MAIN-->
 </template>
 <script setup>
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from "~/store/auth";
 const route = useRoute();
 const address = ref([]);
 const { token } = toRefs(useAuthStore());

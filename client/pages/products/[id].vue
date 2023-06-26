@@ -282,7 +282,10 @@
                 </div>
 
                 <div class="a-section">
-                  <div class="a-button-stack">
+                  <div
+                    class="a-button-stack"
+                    @click="addProductToCart(product)"
+                  >
                     <span
                       class="a-spacing-small a-button-primary a-button-icon"
                     >
@@ -402,6 +405,9 @@
 <script setup>
 import VueStarRating from "vue-star-rating";
 import ReviewSection from "~/components/ReviewSection";
+import { useMainStore } from "../../store/cart";
+const { addProductToCart } = useMainStore();
+
 const route = useRoute();
 
 const productResponse = await useFetch(

@@ -85,7 +85,7 @@ definePageMeta({
 });
 const router = useRouter();
 
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from "~/store/auth";
 const auth = useAuthStore();
 
 const email = ref("");

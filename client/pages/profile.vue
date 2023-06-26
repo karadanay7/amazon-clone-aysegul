@@ -61,7 +61,7 @@
 </template>
 <script setup>
 import { ref, toRefs } from "vue";
-import { useAuthStore } from "../stores/auth"; // Update the path to your auth store file
+import { useAuthStore } from "../store/auth"; // Update the path to your auth store file
 
 const { user, token } = toRefs(useAuthStore());
 const { updateUser, getUser, logout } = useAuthStore();

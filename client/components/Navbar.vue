@@ -129,7 +129,7 @@
                   id="nav-cart-count"
                   aria-hidden="true"
                   class="nav-cart-count nav-cart-0"
-                  >0</span
+                  >{{ cartLength }}</span
                 >
               </NuxtLink>
             </div>
@@ -142,7 +142,9 @@
 
 <script setup>
 import Search from "~/components/Search.vue";
-import { useAuthStore } from "../stores/auth"; // Update the path to your auth store file
+import { useAuthStore } from "../store/auth"; //
+import { useMainStore } from "../store/cart";
+const { cartLength } = toRefs(useMainStore());
 
 const { isLoggedIn, user } = useAuthStore();
 

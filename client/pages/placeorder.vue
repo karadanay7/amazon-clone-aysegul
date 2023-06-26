@@ -34,13 +34,17 @@
                         <div class="displayAddressDiv">
                           <!-- User's address -->
                           <ul class="displayAddressUL">
-                            <li>fullName</li>
-                            <li>streetAddress</li>
-                            <li>city</li>
-                            <li>country</li>
+                            <li>
+                              {{ user?.address.fullName }}
+                            </li>
+                            <li>{{ user?.address.streetAddress }}</li>
+                            <li>{{ user?.address.city }}</li>
+                            <li>{{ user?.address.country }}</li>
                             <li>
                               Phone:
-                              <span dir="ltr">phoneNumber</span>
+                              <span dir="ltr">{{
+                                user?.address.phoneNumber
+                              }}</span>
                             </li>
                           </ul>
                         </div>
@@ -126,25 +130,31 @@
                   <div class="row">
                     <!-- Cart -->
                     <div class="col-xl-6 col-lg-7 col-sm-6 col-12">
-                      <div class="a-row a-spacing-base">
+                      <div
+                        class="a-row a-spacing-base"
+                        v-for="product in cart"
+                        :key="product._id"
+                      >
                         <div class="row">
                           <!-- Product's photo -->
                           <div class="col-sm-3 col-3">
-                            <img src style="width: 100px" />
+                            <img :src="product.photo" style="width: 100px" />
                           </div>
                           <!-- Product's Title -->
                           <div class="col-sm-9 col-9">
                             <div class="a-row">
-                              <strong>Product Title</strong>
+                              <strong>{{ product.title }}</strong>
                             </div>
                             <!-- Product's owner name -->
                             <div class="a-row a-size-small">
-                              by product owner name
+                              {{ product.owner.name }}
                             </div>
                             <div class="a-row">
                               <!-- Product's price -->
                               <span class="a-color-price a-spacing-micro">
-                                <strong dir="ltr">$30</strong>
+                                <strong dir="ltr">{{
+                                  product.price * product.quantity
+                                }}</strong>
                               </span>
                             </div>
                             <div class="a-row">
@@ -154,7 +164,7 @@
                             </div>
                             <div class="a-row">
                               <!-- Product's quantity -->
-                              <strong>Quantity: 213</strong>
+                              <strong>Quantity: {{ product.quantity }}</strong>
                             </div>
                             <div class="a-row a-color-secondary a-size-small">
                               Sold by:&nbsp;Amazon.com Services, Inc
@@ -258,7 +268,9 @@
                       <div class="row">
                         <!-- Cart's total price -->
                         <div class="col-sm-6">Items:</div>
-                        <div class="col-sm-6 text-right">USD $999</div>
+                        <div class="col-sm-6 text-right">
+                          USD ${{ getCartTotalPrice }}
+                        </div>
                       </div>
                       <div class="row">
                         <!-- Shipping cost -->
@@ -386,8 +398,14 @@
   </body>
 </template>
 
-<script>
-export default {
+<script setup>
+definePageMeta({
   layout: "none",
-};
+});
+import { useAuthStore } from "../store/auth"; //
+import { useMainStore } from "../store/cart";
+
+const { user } = toRefs(useAuthStore());
+
+const { cart, getCartTotalPrice } = toRefs(useMainStore());
 </script>

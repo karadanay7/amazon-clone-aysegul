@@ -135,9 +135,31 @@
 
 <script setup>
 import FeaturedProduct from "~/components/FeaturedProduct.vue";
+import { useAuthStore } from "~/store/auth";
 const response = await useFetch("http://localhost:3000/api/products");
 
 const products = response.data?.value?.products;
+
+const { addresses, token } = toRefs(useAuthStore());
+
+try {
+  const response = await fetch("http://localhost:3000/api/addresses", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.value}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+  console.log(data, "address data");
+  addresses.value = data.addresses;
+  // Perform any further actions with the addresses data
+} catch (error) {
+  console.log("errorr", error);
+  console.log(error);
+  // Handle any network or other errors
+}
 </script>
 
 <style scoped></style>

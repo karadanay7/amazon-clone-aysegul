@@ -26,6 +26,7 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       title: "Amazon clone",
+      script: [{ src: "https://js.stripe.com/v3" }],
       meta: [{ name: "Amazon clone" }],
       link: [
         {

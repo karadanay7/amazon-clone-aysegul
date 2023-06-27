@@ -35,15 +35,15 @@
                           <!-- User's address -->
                           <ul class="displayAddressUL">
                             <li>
-                              {{ user?.address.fullName }}
+                              {{ currentAddress?.fullName }}
                             </li>
-                            <li>{{ user?.address.streetAddress }}</li>
-                            <li>{{ user?.address.city }}</li>
-                            <li>{{ user?.address.country }}</li>
+                            <li>{{ currentAddress?.streetAddress }}</li>
+                            <li>{{ currentAddress?.city }}</li>
+                            <li>{{ currentAddress?.country }}</li>
                             <li>
                               Phone:
                               <span dir="ltr">{{
-                                user?.address.phoneNumber
+                                currentAddress?.phoneNumber
                               }}</span>
                             </li>
                           </ul>
@@ -125,7 +125,7 @@
                   <div
                     class="a-row a-color-state a-text-bold a-size-medium a-spacing-small"
                   >
-                    Estimated delivery: 29 November 2019
+                    Estimated delivery: {{ shippingEstimatedDelivery }}
                   </div>
                   <div class="row">
                     <!-- Cart -->
@@ -199,9 +199,16 @@
                             <b>Choose a delivery option:</b>
                           </span>
                           <!-- Delivery option -->
-                          <div class="a-spacing-mini wednesday">
+                          <label for="normal" class="a-spacing-mini wednesday">
                             <!-- Shipping normal -->
-                            <input type="radio" name="order0" />
+                            <input
+                              type="radio"
+                              name="order0"
+                              v-model="selectedOption"
+                              value="normal"
+                              @change="onChooseShipping('normal')"
+                              id="normal"
+                            />
                             <span class="a-radio-label">
                               <span class="a-color-success">
                                 <strong>Averages 7 business days</strong>
@@ -212,11 +219,18 @@
                                 Shipping - No Tracking</span
                               >
                             </span>
-                          </div>
+                          </label>
                           <br />
-                          <div class="a-spacing-mini tuesday">
+                          <label for="fast" class="a-spacing-mini tuesday">
                             <!-- Shipping fast -->
-                            <input type="radio" name="order0" />
+                            <input
+                              type="radio"
+                              name="order0"
+                              value="fast"
+                              v-model="selectedOption"
+                              @change="onChooseShipping('fast')"
+                              id="fast"
+                            />
                             <span class="a-radio-label">
                               <span class="a-color-success">
                                 <strong>Averages 3 business days</strong>
@@ -226,7 +240,7 @@
                                 >$49.98&nbsp;-&nbsp;Shipping</span
                               >
                             </span>
-                          </div>
+                          </label>
                         </fieldset>
                       </div>
                     </div>
@@ -275,7 +289,9 @@
                       <div class="row">
                         <!-- Shipping cost -->
                         <div class="col-sm-6">Shipping & handling:</div>
-                        <div class="col-sm-6 text-right">USD 92</div>
+                        <div class="col-sm-6 text-right">
+                          USD {{ shippingPrice }}
+                        </div>
                       </div>
                       <div class="row mt-2">
                         <div class="col-sm-6"></div>
@@ -286,7 +302,9 @@
                       <!-- Total Price with Shipping -->
                       <div class="row">
                         <div class="col-sm-6">Total Before Tax:</div>
-                        <div class="col-sm-6 text-right">USD 300023</div>
+                        <div class="col-sm-6 text-right">
+                          USD {{ getCartTotalPriceWithShipping }}
+                        </div>
                       </div>
                       <div class="row">
                         <div class="col-sm-6">
@@ -304,7 +322,7 @@
                         <div class="col-sm-6 text-right">
                           <!-- Total Price with Shipping -->
                           <div class="a-color-price a-size-medium a-text-bold">
-                            USD 300023
+                            USD {{ getCartTotalPriceWithShipping }}
                           </div>
                         </div>
                       </div>
@@ -405,7 +423,48 @@ definePageMeta({
 import { useAuthStore } from "../store/auth"; //
 import { useMainStore } from "../store/cart";
 
-const { user } = toRefs(useAuthStore());
+const selectedOption = ref("normal");
+const { currentAddress, token } = toRefs(useAuthStore());
+const { setShipment, getCartTotalPrice } = useMainStore();
+const {
+  shippingEstimatedDelivery,
+  shippingPrice,
+  getCartTotalPriceWithShipping,
+} = toRefs(useMainStore());
 
-const { cart, getCartTotalPrice } = toRefs(useMainStore());
+(async () => {
+  try {
+    let response = await fetch("http://localhost:3000/api/shipment", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ shipment: "normal" }),
+    });
+    let data = await response.json();
+
+    setShipment(data.shipment.price, data.shipment.estimated);
+  } catch (e) {
+    console.error("Error fetching initial shipment data:", e);
+  }
+})();
+
+const onChooseShipping = async (shipment) => {
+  try {
+    let response = await fetch("http://localhost:3000/api/shipment", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ shipment }),
+    });
+    let data = await response.json();
+
+    setShipment(data.shipment.price, data.shipment.estimated);
+  } catch (e) {
+    console.error("Error selecting shipping option:", e);
+  }
+};
 </script>

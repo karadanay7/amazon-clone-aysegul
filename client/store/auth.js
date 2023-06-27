@@ -8,11 +8,15 @@ export const useAuthStore = defineStore(
   "auth",
   () => {
     const router = useRouter();
-    const token = useStorage(AUTH_TOKEN_KEY, null, "localStorage");
+    const token = useStorage(AUTH_TOKEN_KEY, null);
     const user = ref(null);
-
+    const addresses = ref([]);
     const isAuthenticated = computed(() => !!token.value);
     const isLoggedIn = computed(() => !!user.value);
+
+    const currentAddress = computed(() =>
+      addresses.value?.find((address) => addresses._id === user.value.addresses)
+    );
 
     const register = async ({ name, email, password }) => {
       try {
@@ -102,14 +106,12 @@ export const useAuthStore = defineStore(
       register,
       getUser,
       logout,
-
+      currentAddress,
+      addresses,
       setToken,
     };
   },
   {
-    persist: {
-      key: "auth",
-      storage: persistedState.localStorage,
-    },
+    persist: true,
   }
 );

@@ -146,27 +146,11 @@ import { useAuthStore } from "../store/auth"; //
 import { useMainStore } from "../store/cart";
 const { cartLength } = toRefs(useMainStore());
 
-const { isLoggedIn, user } = useAuthStore();
+const { isLoggedIn, user, addresses } = useAuthStore();
 
 const { token } = toRefs(useAuthStore());
-const addresses = ref([]);
-try {
-  const response = await fetch("http://localhost:3000/api/addresses", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token.value}`,
-      "Content-Type": "application/json",
-    },
-  });
 
-  const data = await response.json();
-  addresses.value = data.addresses;
-  // Perform any further actions with the addresses data
-} catch (error) {
-  console.log(error);
-  // Handle any network or other errors
-}
-const cityName = computed(() => addresses.value?.[0].city);
+const cityName = computed(() => addresses?.value?.[0].city);
 </script>
 
 <style lang="scss" scoped></style>

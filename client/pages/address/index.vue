@@ -111,7 +111,7 @@
   <!--/MAIN-->
 </template>
 <script setup>
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from "~/store/auth";
 const { token } = toRefs(useAuthStore());
 const addresses = ref([]);
 try {

@@ -4,6 +4,8 @@ export const useMainStore = defineStore(
   "main",
   () => {
     const cart = ref([]);
+    const shippingPrice = ref(0);
+    const shippingEstimatedDelivery = ref("");
     const cartLength = computed(() =>
       cart.value?.reduce((acc, product) => acc + product.quantity, 0)
     );
@@ -12,6 +14,7 @@ export const useMainStore = defineStore(
       product.quantity = 1;
       cart.value.push(product);
     };
+
     const removeProductFromCart = (product) => {
       let indexOfProduct = cart.value.indexOf(product);
       cart.value.splice(indexOfProduct, 1, product);
@@ -37,9 +40,22 @@ export const useMainStore = defineStore(
       });
       return total;
     });
+
     const removeProduct = (product) => {
       cart.value = [];
     };
+
+    const setShipment = (price, estimatedDelivery) => {
+      shippingPrice.value = price;
+      shippingEstimatedDelivery.value = estimatedDelivery;
+    };
+    const getCartTotalPriceWithShipping = computed(() => {
+      let total = 0;
+      cart.value.forEach((product) => {
+        total += product.price * product.quantity;
+      });
+      return (total + shippingPrice.value).toFixed(2);
+    });
 
     return {
       cart,
@@ -47,13 +63,14 @@ export const useMainStore = defineStore(
       addProductToCart,
       removeProductFromCart,
       getCartTotalPrice,
+      shippingEstimatedDelivery,
+      shippingPrice,
       removeProduct,
+      setShipment,
+      getCartTotalPriceWithShipping,
     };
   },
   {
-    persist: {
-      key: "main",
-      storage: persistedState.localStorage,
-    },
+    persist: true,
   }
 );

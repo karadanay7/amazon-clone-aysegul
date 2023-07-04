@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const moment = require("moment");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const verifyToken = require("../middleware/verify-token");
+const Order = require("../models/order");
 const SHIPMENT = {
   normal: {
     price: 13.98,
@@ -27,6 +30,57 @@ router.post("/shipment", (req, res) => {
     success: true,
     shipment: shipment,
   });
+});
+
+router.post("/payment", verifyToken, (req, res) => {
+  let totalPrice = Math.round(req.body.totalPrice * 100);
+  console.log(req);
+  stripe.customers
+    .create({
+      email: req.decoded.email,
+    })
+    .then((customer) => {
+      console.log("Customer created:", customer);
+      return stripe.customers.createSource(customer.id, {
+        source: "tok_visa",
+      });
+    })
+    .then((source) => {
+      console.log("Payment source created:", source);
+      return stripe.charges.create({
+        amount: totalPrice,
+        currency: "usd",
+        customer: source.customer,
+      });
+    })
+    .then(async (charge) => {
+      console.log("Charge created:", charge);
+      let order = new Order(); // Create a new instance of the Order model
+      let cart = req.body.cart;
+
+      cart.map((product) => {
+        order.products.push({
+          productID: product._id,
+          quantity: parseInt(product.quantity),
+          price: product.price,
+        });
+      });
+      order.owner = req.decoded._id;
+      order.estimatedDelivery = req.body.estimatedDelivery;
+      await order.save();
+      console.log("Order saved:", order);
+      res.json({
+        success: true,
+        message: "Successfully made a payment",
+      });
+    })
+    .catch((err) => {
+      console.error("Payment failed:", err);
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    });
 });
 
 module.exports = router;

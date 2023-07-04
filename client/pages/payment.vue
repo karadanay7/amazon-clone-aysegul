@@ -34,7 +34,7 @@
             <div class="a-section">
               <h2>Make a payment</h2>
               <div class="a-section a-spacing-none a-spacing-top-small">
-                <b>The total price is $999999</b>
+                <b>The total price is ${{ getCartTotalPriceWithShipping }}</b>
               </div>
 
               <!-- Error message  -->
@@ -45,7 +45,7 @@
                 <div class="a-spacing-medium a-spacing-top-medium">
                   <div class="a-spacing-top-medium">
                     <!-- Stripe card -->
-                    <div ref="card"></div>
+                    <div id="card-element" ref="card"></div>
                     <!-- End of Stripe card -->
                   </div>
 
@@ -67,7 +67,9 @@
                   <div class="a-spacing-top-large">
                     <span class="a-button-register">
                       <span class="a-button-inner">
-                        <span class="a-button-text">Purchase</span>
+                        <span @click="onPurchase" class="a-button-text"
+                          >Purchase</span
+                        >
                       </span>
                     </span>
                   </div>
@@ -83,7 +85,63 @@
   </main>
   <!--/MAIN-->
 </template>
-<script setup></script>
+<script setup>
+import { useAuthStore } from "../store/auth";
+import { useMainStore } from "../store/cart";
+const { cart, getCartTotalPriceWithShipping, shippingEstimatedDelivery } =
+  toRefs(useMainStore());
+const { setShipment } = useMainStore();
+
+const { token } = toRefs(useAuthStore());
+
+const { clearCart } = useMainStore();
+const router = useRouter();
+const stripe = ref(null);
+const card = ref(null);
+const error = ref("");
+
+onMounted(() => {
+  stripe.value = Stripe(
+    "pk_test_51NNMDLB4coRtVjaI1mdV7TJCReHoNtEHi9v6f3UUSZ0sYxxabjDX5aiYRcUT8fdPsRm8A4iTwDbzCGaIsZpqyQ3j00gwTWXn8R"
+  );
+  let elements = stripe.value.elements();
+  card.value = elements.create("card");
+
+  card.value.mount("#card-element");
+});
+
+const onPurchase = async () => {
+  try {
+    let stripeToken = await stripe.value.createToken(card.value);
+    let response = await fetch("http://localhost:3000/api/payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.value}`,
+      },
+
+      body: JSON.stringify({
+        token: stripeToken.id, // Use `token.id` instead of `token`
+        totalPrice: getCartTotalPriceWithShipping.value,
+        cart: cart.value,
+        estimatedDelivery: shippingEstimatedDelivery.value,
+      }),
+    });
+
+    if (response.ok) {
+      clearCart();
+      // Payment successful
+      router.push("/");
+    } else {
+      // Payment failed
+      throw new Error("Payment failed: " + response.statusText);
+    }
+  } catch (err) {
+    console.error(err);
+    error.value = "Payment failed. Please try again.";
+  }
+};
+</script>
 
 <style>
 .StripeElement {

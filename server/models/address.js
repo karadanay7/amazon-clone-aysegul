@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+mongoose.Promise = require("bluebird");
+
 const AddressSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   country: String,

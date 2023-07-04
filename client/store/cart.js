@@ -56,6 +56,14 @@ export const useMainStore = defineStore(
       });
       return (total + shippingPrice.value).toFixed(2);
     });
+    const getEstimatedDelivery = computed(() => {
+      return shippingEstimatedDelivery.value;
+    });
+    const clearCart = () => {
+      cart.value = [];
+      shippingPrice.value = 0;
+      shippingEstimatedDelivery.value = "";
+    };
 
     return {
       cart,
@@ -68,6 +76,8 @@ export const useMainStore = defineStore(
       removeProduct,
       setShipment,
       getCartTotalPriceWithShipping,
+      getEstimatedDelivery,
+      clearCart,
     };
   },
   {

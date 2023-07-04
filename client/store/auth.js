@@ -71,6 +71,7 @@ export const useAuthStore = defineStore(
           },
         });
         const data = await response.json();
+        console.log("User API Response:", data);
 
         if (data.success) {
           updateUser(data.user); // Update the user object directly

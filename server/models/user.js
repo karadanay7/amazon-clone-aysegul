@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt-nodejs");
+const Address = require("./address");
+mongoose.Promise = require("bluebird");
 
 const UserSchema = new Schema({
   name: String,
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, unique: true },
-  address: { type: Schema.Types.ObjectId, ref: "Address" },
+  addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
 });
 
 UserSchema.pre("save", function (next) {

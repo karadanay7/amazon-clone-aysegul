@@ -7,7 +7,6 @@
         </div>
         <!-- Main Content -->
         <div class="col-xl-10 col-lg-9 md-8 col-sm-8">
-          <FeaturedProduct />
           <div class="mainResults">
             <ul class="s-result-list">
               <li
@@ -133,34 +132,6 @@
   </main>
 </template>
 
-<script setup>
-import FeaturedProduct from "~/components/FeaturedProduct.vue";
-import { useAuthStore } from "~/store/auth";
-const response = await useFetch("http://localhost:3000/api/products");
-
-const products = response.data?.value?.products;
-
-const { addresses, token } = toRefs(useAuthStore());
-
-try {
-  const response = await fetch("http://localhost:3000/api/addresses", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token.value}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-
-    addresses.value = data.addresses;
-  } else {
-    throw new Error("Failed to fetch addresses");
-  }
-} catch (error) {
-  console.log("Error fetching addresses:", error);
-}
-</script>
+<script setup></script>
 
 <style scoped></style>
